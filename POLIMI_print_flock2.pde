@@ -1,6 +1,6 @@
 import punktiert.math.Vec;
 import punktiert.physics.*;
-import megamu.mesh.*;
+//import megamu.mesh.*;
 import peasy.*;
 import java.util.TreeSet;
 import java.util.Iterator;
@@ -54,9 +54,9 @@ void setup() {
 
   //cam = new PeasyCam(this, 500);
   //
-  vort1=new BAttraction(new Vec(width/6,height-250,0),width,0.05);
-  vort2=new BAttraction(new Vec(width/2,height-250,0),width,0.05);
-  vort3=new BAttraction(new Vec(5*width/6,height-250,0),width,0.05);
+  vort1=new BAttraction(new Vec(width/6,height,0),width,0.05);
+  vort2=new BAttraction(new Vec(width/2,height,0),width,0.05);
+  vort3=new BAttraction(new Vec(5*width/6,height,0),width,0.05);
   
   
   //BWorldBox boxx = new BWorldBox(new Vec(), new Vec(width, 1080, 0));
@@ -85,7 +85,7 @@ void setup() {
   compsGroup.addBehavior(vort3);
 
 
-  json = loadJSONObject("repubblica.json");
+  json = loadJSONObject("corriere.json");
   values = json.getJSONArray("results");
 
   background(0);
@@ -165,7 +165,7 @@ void draw() {
 
     if(((Entity)p).ttl>=gttl) placesTBR.add(p);
     
-    if(((Entity)p).y>=height-200 && ((Entity)p).radius>6) {
+    if(((Entity)p).y>=height-200 && ((Entity)p).radius>4) {
      int in=((Entity)p).in(finPlaces);
       
       if(in>=0) finPlaces.get(in).radius+=p.radius; 
@@ -179,7 +179,7 @@ void draw() {
  
     if(((Entity)p).ttl>=gttl) peopleTBR.add(p);
     
-    if(((Entity)p).y>=height-200 && ((Entity)p).radius>6) {
+    if(((Entity)p).y>=height-200 && ((Entity)p).radius>4) {
       
       int in=((Entity)p).in(finPeople);
       
@@ -195,7 +195,7 @@ void draw() {
  
     if(((Entity)p).ttl>=gttl) compsTBR.add(p);
     
-    if(((Entity)p).y>=height-200 && ((Entity)p).radius>6) {
+    if(((Entity)p).y>=height-200 && ((Entity)p).radius>4) {
      int in=((Entity)p).in(finComps);
       
       if(in>=0) finComps.get(in).radius+=p.radius; 
@@ -395,32 +395,12 @@ void drawPrisms(ArrayList<VParticle> particles, int col) {
   
   void drawAreas(ArrayList<Entity> ent, int col, float base, BAttraction vort) {
    int i = 0;
-   float l = 70;
+   float l = 72;
    float h = 0;
    fill(col,255);
-   stroke(255,20);
+   stroke(col);
+   strokeWeight(2);
    
-   
-   if(ent.size()>0 && ent.size()<2) {
-    stroke(col);
-    strokeWeight(3);
-    line(base,height-200,base,height-200-ent.get(0).radius);
-    ent.get(0).ttl+=1+5/ent.get(0).radius;
-    noStroke();
-    
-     hint(DISABLE_DEPTH_TEST);
-          textAlign(CENTER);
-          textSize(13);
-          fill(255);
-          text(ent.get(0).name,base,height-80);
-        
-        hint(ENABLE_DEPTH_TEST);
-    vort.setAttractor(new Vec(base,height-250,0));  
-   }
-   
-   else {
-   beginShape();
-    vertex(base+(i+1)*l,height-200,0);
    
    
    
@@ -430,34 +410,33 @@ void drawPrisms(ArrayList<VParticle> particles, int col) {
     Entity e =  iter.next();
      if (e.ttl>=gttl) iter.remove();
      else {
-       h=e.radius;
-      
-       vertex(base+i*l,height-200-h,0);
-       //line(i*70,height-300,0,i*70,height-300-h,0);
+       h=e.radius/4;
+       
+       for(int j=0; j<h; j++) {
         
-        e.ttl+=1+5/e.radius;
+         line(base+(i*l)+2,height-100-(j*6),1,base+(i*l)+l,height-100-(j*6),1);
+         
+       }
+  
+        e.ttl+=1+2/e.radius;
      }
    }
   
-  
-  //line((i+1)*70,height-300,0);
-  vertex(base+i*l,height-200,0);
-   endShape(CLOSE); 
-   
    for (int j = 0; j<ent.size(); j++) {
     
      hint(DISABLE_DEPTH_TEST);
-          textAlign(CENTER);
+         textAlign(CENTER);
+         rectMode(CORNERS);
           textSize(13);
           fill(255);
-          text(ent.get(j).name,base+(j+1)*l,height-80);
+          text(ent.get(j).name,base+((j+1)*l)+2,height-90,base+((j+1)*l)+l,height-40);
         
         hint(ENABLE_DEPTH_TEST);
      
    }
    
-   vort.setAttractor(new Vec(base+(i/2)*l,height-250,0));
+   vort.setAttractor(new Vec(base+(i/2)*l,height,0));
    
-   }
+   
     
   }
